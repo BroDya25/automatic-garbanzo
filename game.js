@@ -70,6 +70,14 @@ backBtn.addEventListener('click', backToMenu);
 function handleKeyPress(e) {
     const key = e.key.toLowerCase();
     
+    // Spacebar to start game
+    if (e.key === ' ') {
+        if (!gameRunning && gameScreen.classList.contains('hidden') === false) {
+            startGame();
+            e.preventDefault();
+        }
+    }
+    
     // Player 1 controls (WASD)
     if (key === 'w') {
         if (direction1.y === 0) nextDirection1 = {x: 0, y: -1};
@@ -104,10 +112,19 @@ function handleKeyPress(e) {
     
     // Send move to server in LAN mode
     if (isLAN && gameRunning && socket) {
-        socket.emit('move', {
-            game_id: gameId,
-            direction: nextDirection1
-        });
+        if (playerNumber === 1) {
+            socket.emit('move', {
+                game_id: gameId,
+                player_number: 1,
+                direction: nextDirection1
+            });
+        } else if (playerNumber === 2) {
+            socket.emit('move', {
+                game_id: gameId,
+                player_number: 2,
+                direction: nextDirection2
+            });
+        }
     }
 }
 
@@ -176,12 +193,22 @@ function initializeWebSocket() {
     
     socket.on('move_update', (data) => {
         const dir = data.direction;
-        if (playerNumber === 2) {
-            // We are player 2, update player 1's direction
+        const senderPlayerNumber = data.player_number;
+        
+        // Update opponent's direction (prevent 180° reversals)
+        if (senderPlayerNumber === 1) {
+            // Received Player 1's move, we must be Player 2
             if (direction1.y === 0 && (dir.y === -1 || dir.y === 1)) {
                 direction1 = dir;
             } else if (direction1.x === 0 && (dir.x === -1 || dir.x === 1)) {
                 direction1 = dir;
+            }
+        } else if (senderPlayerNumber === 2) {
+            // Received Player 2's move, we must be Player 1
+            if (direction2.y === 0 && (dir.y === -1 || dir.y === 1)) {
+                direction2 = dir;
+            } else if (direction2.x === 0 && (dir.x === -1 || dir.x === 1)) {
+                direction2 = dir;
             }
         }
     });
@@ -226,7 +253,7 @@ function startLANGame() {
     gameScreen.classList.remove('hidden');
     player2Label.classList.remove('hidden');
     score2Display.classList.remove('hidden');
-    controlsText.textContent = playerNumber === 1 ? 'Your Controls:' : 'Opponent is Player 1';
+    controlsText.textContent = playerNumber === 1 ? 'Your Controls (P1):' : 'Your Controls (P2):';
     p2Controls.classList.add('hidden');
     
     resetGame();
@@ -444,13 +471,38 @@ function endGame(player1Dead, player2Dead) {
     resetGame();
 }
 
+function drawRoundRect(x, y, width, height, radius, fillColor, glowColor) {
+    ctx.fillStyle = fillColor;
+    ctx.beginPath();
+    ctx.moveTo(x + radius, y);
+    ctx.lineTo(x + width - radius, y);
+    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+    ctx.lineTo(x + width, y + height - radius);
+    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+    ctx.lineTo(x + radius, y + height);
+    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+    ctx.lineTo(x, y + radius);
+    ctx.quadraticCurveTo(x, y, x + radius, y);
+    ctx.closePath();
+    ctx.fill();
+    
+    if (glowColor) {
+        ctx.strokeStyle = glowColor;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+    }
+}
+
 function draw() {
-    // Clear canvas
-    ctx.fillStyle = '#000';
+    // Clear canvas with gradient background
+    const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    gradient.addColorStop(0, '#0a0e27');
+    gradient.addColorStop(1, '#1a1a3e');
+    ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
-    // Draw grid
-    ctx.strokeStyle = '#111';
+    // Draw subtle grid
+    ctx.strokeStyle = 'rgba(100, 100, 150, 0.1)';
     ctx.lineWidth = 0.5;
     for (let i = 0; i <= tileCount; i++) {
         ctx.beginPath();
@@ -464,46 +516,92 @@ function draw() {
         ctx.stroke();
     }
     
-    // Draw Player 1 snake (green)
+    // Draw Player 1 snake (green with gradient)
     snake1.forEach((segment, index) => {
-        if (index === 0) {
-            ctx.fillStyle = '#00ff00';
+        const isHead = index === 0;
+        const x = segment.x * gridSize + 1;
+        const y = segment.y * gridSize + 1;
+        
+        if (isHead) {
+            const headGradient = ctx.createLinearGradient(x, y, x + gridSize - 2, y + gridSize - 2);
+            headGradient.addColorStop(0, '#00ff88');
+            headGradient.addColorStop(1, '#00cc44');
+            drawRoundRect(x, y, gridSize - 2, gridSize - 2, 3, headGradient, '#00ff88');
+            
+            ctx.fillStyle = '#000';
+            const eyeSize = 2;
+            if (direction1.x === 1) {
+                ctx.fillRect(x + gridSize - 6, y + 4, eyeSize, eyeSize);
+                ctx.fillRect(x + gridSize - 6, y + gridSize - 7, eyeSize, eyeSize);
+            } else if (direction1.x === -1) {
+                ctx.fillRect(x + 4, y + 4, eyeSize, eyeSize);
+                ctx.fillRect(x + 4, y + gridSize - 7, eyeSize, eyeSize);
+            } else if (direction1.y === -1) {
+                ctx.fillRect(x + 4, y + 4, eyeSize, eyeSize);
+                ctx.fillRect(x + gridSize - 7, y + 4, eyeSize, eyeSize);
+            } else {
+                ctx.fillRect(x + 4, y + gridSize - 7, eyeSize, eyeSize);
+                ctx.fillRect(x + gridSize - 7, y + gridSize - 7, eyeSize, eyeSize);
+            }
         } else {
-            ctx.fillStyle = '#00cc00';
+            const bodyGradient = ctx.createLinearGradient(x, y, x + gridSize - 2, y + gridSize - 2);
+            bodyGradient.addColorStop(0, '#00dd77');
+            bodyGradient.addColorStop(1, '#00aa33');
+            drawRoundRect(x, y, gridSize - 2, gridSize - 2, 2, bodyGradient, 'rgba(0, 255, 136, 0.5)');
         }
-        ctx.fillRect(
-            segment.x * gridSize + 1,
-            segment.y * gridSize + 1,
-            gridSize - 2,
-            gridSize - 2
-        );
     });
     
-    // Draw Player 2 snake (cyan) - only in multiplayer
+    // Draw Player 2 snake (cyan)
     if (isMultiplayer) {
         snake2.forEach((segment, index) => {
-            if (index === 0) {
-                ctx.fillStyle = '#00ffff';
+            const isHead = index === 0;
+            const x = segment.x * gridSize + 1;
+            const y = segment.y * gridSize + 1;
+            
+            if (isHead) {
+                const headGradient = ctx.createLinearGradient(x, y, x + gridSize - 2, y + gridSize - 2);
+                headGradient.addColorStop(0, '#00ffff');
+                headGradient.addColorStop(1, '#0088ff');
+                drawRoundRect(x, y, gridSize - 2, gridSize - 2, 3, headGradient, '#00ffff');
+                
+                ctx.fillStyle = '#000';
+                const eyeSize = 2;
+                if (direction2.x === 1) {
+                    ctx.fillRect(x + gridSize - 6, y + 4, eyeSize, eyeSize);
+                    ctx.fillRect(x + gridSize - 6, y + gridSize - 7, eyeSize, eyeSize);
+                } else if (direction2.x === -1) {
+                    ctx.fillRect(x + 4, y + 4, eyeSize, eyeSize);
+                    ctx.fillRect(x + 4, y + gridSize - 7, eyeSize, eyeSize);
+                } else if (direction2.y === -1) {
+                    ctx.fillRect(x + 4, y + 4, eyeSize, eyeSize);
+                    ctx.fillRect(x + gridSize - 7, y + 4, eyeSize, eyeSize);
+                } else {
+                    ctx.fillRect(x + 4, y + gridSize - 7, eyeSize, eyeSize);
+                    ctx.fillRect(x + gridSize - 7, y + gridSize - 7, eyeSize, eyeSize);
+                }
             } else {
-                ctx.fillStyle = '#00aaff';
+                const bodyGradient = ctx.createLinearGradient(x, y, x + gridSize - 2, y + gridSize - 2);
+                bodyGradient.addColorStop(0, '#00ddff');
+                bodyGradient.addColorStop(1, '#0066dd');
+                drawRoundRect(x, y, gridSize - 2, gridSize - 2, 2, bodyGradient, 'rgba(0, 255, 255, 0.5)');
             }
-            ctx.fillRect(
-                segment.x * gridSize + 1,
-                segment.y * gridSize + 1,
-                gridSize - 2,
-                gridSize - 2
-            );
         });
     }
     
-    // Draw food (red)
-    ctx.fillStyle = '#ff0000';
-    ctx.fillRect(
-        food.x * gridSize + 1,
-        food.y * gridSize + 1,
-        gridSize - 2,
-        gridSize - 2
-    );
+    // Draw food with pulsing animation
+    const pulse = Math.sin(Date.now() / 200) * 0.3 + 0.7;
+    const foodX = food.x * gridSize + 1;
+    const foodY = food.y * gridSize + 1;
+    
+    ctx.fillStyle = `rgba(255, 100, 0, ${pulse * 0.5})`;
+    ctx.beginPath();
+    ctx.arc(foodX + gridSize / 2 - 1, foodY + gridSize / 2 - 1, gridSize / 2 + 2, 0, Math.PI * 2);
+    ctx.fill();
+    
+    const foodGradient = ctx.createLinearGradient(foodX, foodY, foodX + gridSize - 2, foodY + gridSize - 2);
+    foodGradient.addColorStop(0, '#ff6600');
+    foodGradient.addColorStop(1, '#ff0000');
+    drawRoundRect(foodX, foodY, gridSize - 2, gridSize - 2, 2, foodGradient, '#ffaa00');
 }
 
 // Initial draw

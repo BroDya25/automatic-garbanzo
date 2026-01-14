@@ -9,38 +9,50 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .container {
-    background: rgba(255, 255, 255, 0.95);
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    background: rgba(20, 20, 40, 0.95);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 30px rgba(100, 150, 255, 0.2);
     text-align: center;
+    border: 2px solid rgba(100, 150, 255, 0.3);
 }
 
 h1 {
-    color: #333;
+    color: #fff;
     margin-bottom: 20px;
-    font-size: 2.5em;
+    font-size: 2.8em;
+    background: linear-gradient(135deg, #00ff88 0%, #00ffff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
 }
 
 .info {
     display: flex;
     justify-content: space-around;
     margin-bottom: 20px;
-    font-size: 1.2em;
-    color: #555;
+    font-size: 1.3em;
+    color: #00ff88;
+    gap: 20px;
+    background: rgba(0, 255, 136, 0.1);
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid rgba(0, 255, 136, 0.3);
 }
 
 #gameCanvas {
-    border: 3px solid #333;
-    background-color: #000;
+    border: 4px solid #00ff88;
+    background-color: #0a0e27;
     display: block;
     margin: 0 auto 20px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 20px rgba(0, 255, 136, 0.3), inset 0 0 20px rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
 }
 
 .controls {
@@ -52,40 +64,45 @@ h1 {
 }
 
 button {
-    padding: 10px 20px;
+    padding: 12px 25px;
     font-size: 1em;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
     cursor: pointer;
-    background-color: #2a5298;
-    color: white;
-    transition: background-color 0.3s, transform 0.1s;
+    background: linear-gradient(135deg, #00ff88 0%, #00cc44 100%);
+    color: #000;
+    font-weight: bold;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3);
+    white-space: nowrap;
+    min-width: 160px;
 }
 
 button:hover {
-    background-color: #1e3c72;
-    transform: translateY(-2px);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 25px rgba(0, 255, 136, 0.5);
 }
 
 button:active {
-    transform: translateY(0);
+    transform: translateY(-1px);
 }
 
 .instructions {
-    background-color: #f0f0f0;
-    padding: 15px;
-    border-radius: 5px;
+    background-color: rgba(0, 255, 136, 0.1);
+    padding: 20px;
+    border-radius: 10px;
     text-align: left;
-    font-size: 0.9em;
-    color: #555;
+    font-size: 0.95em;
+    color: #00ff88;
+    border: 1px solid rgba(0, 255, 136, 0.2);
 }
 
 .instructions p {
-    margin: 8px 0;
+    margin: 10px 0;
 }
 
 .instructions strong {
-    color: #333;
+    color: #00ffff;
 }
 
 .mode-screen {
@@ -96,7 +113,7 @@ button:active {
 }
 
 .mode-screen h2 {
-    color: #333;
+    color: #00ff88;
     font-size: 1.8em;
     margin-bottom: 20px;
 }
@@ -131,7 +148,7 @@ button:active {
 }
 
 .lan-screen h2 {
-    color: #333;
+    color: #00ff88;
     font-size: 1.8em;
     margin-bottom: 20px;
 }
@@ -153,26 +170,31 @@ button:active {
 #gameCodeInput {
     padding: 12px;
     font-size: 1em;
-    border: 2px solid #2a5298;
-    border-radius: 5px;
+    border: 2px solid #00ff88;
+    border-radius: 8px;
     min-width: 250px;
     text-align: center;
     text-transform: uppercase;
+    background: rgba(0, 255, 136, 0.1);
+    color: #00ff88;
+    font-weight: bold;
+}
+
+#gameCodeInput::placeholder {
+    color: rgba(0, 255, 136, 0.5);
 }
 
 #lanMessage {
-    color: #2a5298;
+    color: #00ff88;
     font-weight: bold;
     min-height: 30px;
     text-align: center;
+    text-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
 }
 
 #backFromLanBtn {
     margin-top: 20px;
     padding: 10px 20px;
-    background-color: #999;
-}
-
-#backFromLanBtn:hover {
-    background-color: #777;
+    background: linear-gradient(135deg, #666666 0%, #444444 100%);
+    color: #fff;
 }

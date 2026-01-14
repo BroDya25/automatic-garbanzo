@@ -1,9 +1,10 @@
-from flask import Flask, render_template
+from flask import Flask, send_file
 from flask_socketio import SocketIO, emit, join_room, leave_room
 import json
 import uuid
+import os
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='.', static_url_path='')
 app.config['SECRET_KEY'] = 'snake-game-secret'
 socketio = SocketIO(app, cors_allowed_origins="*")
 
@@ -13,7 +14,7 @@ players_waiting = {}
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return send_file(os.path.join(os.getcwd(), 'index.html'))
 
 @socketio.on('connect')
 def handle_connect():
@@ -118,9 +119,11 @@ def handle_move(data):
     if game_id not in games:
         return
     
+    player_number = data.get('player_number', 1)
+    
     # Broadcast move to all players in the game
     emit('move_update', {
-        'player_sid': sid,
+        'player_number': player_number,
         'direction': data['direction']
     }, room=game_id)
 
