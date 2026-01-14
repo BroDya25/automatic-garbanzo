@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake Game</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Snake Game</h1>
+        
+        <!-- Mode Selection Screen -->
+        <div id="modeScreen" class="mode-screen">
+            <h2>Select Game Mode</h2>
+            <button id="singlePlayerBtn" class="mode-btn">Single Player</button>
+            <button id="multiPlayerLocalBtn" class="mode-btn">Multiplayer (Local)</button>
+            <button id="multiPlayerLANBtn" class="mode-btn">Multiplayer (LAN)</button>
+        </div>
+
+        <!-- LAN Screen -->
+        <div id="lanScreen" class="lan-screen hidden">
+            <h2>LAN Multiplayer</h2>
+            <div class="lan-options">
+                <button id="createGameBtn" class="mode-btn">Create Game</button>
+                <div class="separator">OR</div>
+                <input type="text" id="gameCodeInput" placeholder="Enter game code" maxlength="8">
+                <button id="joinGameBtn" class="mode-btn">Join Game</button>
+            </div>
+            <div id="lanMessage"></div>
+            <button id="backFromLanBtn">Back</button>
+        </div>
+        
+        <!-- Game Screen -->
+        <div id="gameScreen" class="game-screen hidden">
+            <div class="info">
+                <div>
+                    <span id="player1Label">Score P1:</span> <span id="score">0</span>
+                </div>
+                <div>
+                    <span id="player2Label" class="hidden">Score P2:</span> <span id="score2" class="hidden">0</span>
+                </div>
+                <div>
+                    <span id="highScoreLabel">High Score:</span> <span id="highScore">0</span>
+                </div>
+            </div>
+            <canvas id="gameCanvas" width="400" height="400"></canvas>
+            <div class="controls">
+                <button id="startBtn">Start Game</button>
+                <button id="pauseBtn" disabled>Pause</button>
+                <button id="resetBtn">Reset</button>
+                <button id="backBtn">Back to Menu</button>
+            </div>
+            <div class="instructions">
+                <p><strong id="controlsText">Controls:</strong> Use WASD to move</p>
+                <p id="p2Controls" class="hidden"><strong>Player 2:</strong> Use arrow keys to move</p>
+                <p><strong>Goal:</strong> Eat the red food to grow. Don't hit the walls or yourself!</p>
+            </div>
+        </div>
+    </div>
+    <script src="game.js"></script>
+</body>
+</html>
