@@ -198,3 +198,215 @@ button:active {
     background: linear-gradient(135deg, #666666 0%, #444444 100%);
     color: #fff;
 }
+/* Mobile Touch Controls */
+.mobile-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.horizontal-controls {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.direction-btn {
+    width: 60px;
+    height: 60px;
+    padding: 0;
+    font-size: 1.5em;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #0088ff 0%, #0055cc 100%);
+    color: white;
+    border: 2px solid #00ffff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.1s;
+    box-shadow: 0 0 10px rgba(0, 136, 255, 0.3);
+}
+
+.direction-btn:active {
+    transform: scale(0.95);
+    box-shadow: 0 0 20px rgba(0, 136, 255, 0.6);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    body {
+        padding: 0;
+        margin: 0;
+    }
+
+    .container {
+        padding: 15px;
+        margin: 0;
+        border-radius: 10px;
+        width: 100vw;
+        height: auto;
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
+    h1 {
+        font-size: 1.8em;
+        margin-bottom: 10px;
+    }
+
+    #gameCanvas {
+        width: 90vw;
+        max-width: 400px;
+        height: auto;
+        border-width: 3px;
+    }
+
+    .info {
+        font-size: 0.95em;
+        gap: 8px;
+        padding: 8px;
+        margin-bottom: 15px;
+    }
+
+    .mode-btn {
+        width: 85vw;
+        max-width: 300px;
+        padding: 12px 20px;
+        font-size: 1em;
+    }
+
+    button {
+        padding: 10px 15px;
+        font-size: 0.9em;
+        min-width: 70px;
+    }
+
+    .controls {
+        gap: 8px;
+        margin-bottom: 15px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .instructions {
+        font-size: 0.8em;
+        padding: 12px;
+        margin-bottom: 15px;
+    }
+
+    .instructions p {
+        margin: 5px 0;
+    }
+
+    .mobile-controls {
+        margin-top: 15px;
+        margin-bottom: 10px;
+    }
+
+    .direction-btn {
+        width: 70px;
+        height: 70px;
+        font-size: 1.8em;
+        border-width: 2px;
+    }
+
+    .horizontal-controls {
+        gap: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 0;
+        margin: 0;
+        overflow-x: hidden;
+    }
+
+    .container {
+        padding: 10px;
+        margin: 0;
+        border-radius: 8px;
+        width: 100vw;
+        height: auto;
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
+    h1 {
+        font-size: 1.3em;
+        margin-bottom: 8px;
+    }
+
+    #gameCanvas {
+        width: 95vw;
+        max-width: 280px;
+        height: auto;
+        border-width: 2px;
+        margin: 10px auto;
+    }
+
+    .info {
+        flex-direction: column;
+        font-size: 0.85em;
+        gap: 3px;
+        padding: 6px;
+        margin-bottom: 10px;
+    }
+
+    .mode-btn {
+        width: 90vw;
+        max-width: 280px;
+        padding: 10px 15px;
+        font-size: 0.95em;
+    }
+
+    button {
+        padding: 8px 10px;
+        font-size: 0.8em;
+        min-width: 60px;
+        width: auto;
+    }
+
+    .controls {
+        gap: 5px;
+        margin-bottom: 12px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .instructions {
+        font-size: 0.75em;
+        padding: 8px;
+        margin-bottom: 12px;
+    }
+
+    .instructions p {
+        margin: 3px 0;
+    }
+
+    /* Mobile Control Buttons */
+    .mobile-controls {
+        width: 100%;
+        margin-top: 12px;
+        margin-bottom: 5px;
+        padding: 0 10px;
+    }
+
+    .direction-btn {
+        width: 65px;
+        height: 65px;
+        font-size: 1.6em;
+        border-width: 2px;
+    }
+
+    .horizontal-controls {
+        gap: 12px;
+    }
+
+    .mobile-controls > button:first-child {
+        margin-bottom: 8px;
+    }
+}

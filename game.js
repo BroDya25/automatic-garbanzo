@@ -67,6 +67,20 @@ pauseBtn.addEventListener('click', togglePause);
 resetBtn.addEventListener('click', resetGame);
 backBtn.addEventListener('click', backToMenu);
 
+// Mobile touch controls
+document.getElementById('upBtn').addEventListener('mousedown', () => {
+    if (direction1.y === 0) nextDirection1 = {x: 0, y: -1};
+});
+document.getElementById('downBtn').addEventListener('mousedown', () => {
+    if (direction1.y === 0) nextDirection1 = {x: 0, y: 1};
+});
+document.getElementById('leftBtn').addEventListener('mousedown', () => {
+    if (direction1.x === 0) nextDirection1 = {x: -1, y: 0};
+});
+document.getElementById('rightBtn').addEventListener('mousedown', () => {
+    if (direction1.x === 0) nextDirection1 = {x: 1, y: 0};
+});
+
 function handleKeyPress(e) {
     const key = e.key.toLowerCase();
     
@@ -146,6 +160,14 @@ function startGameMode(multiplayer, lan) {
             score2Display.classList.add('hidden');
             p2Controls.classList.add('hidden');
             controlsText.textContent = 'Controls:';
+        }
+        
+        // Show mobile controls on small screens
+        const mobileControls = document.getElementById('mobileControls');
+        if (window.innerWidth <= 768) {
+            mobileControls.classList.remove('hidden');
+        } else {
+            mobileControls.classList.add('hidden');
         }
         
         resetGame();
